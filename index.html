@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>image-preloader</title>
+    <style>
+        .border{margin: 1rem 0; border-bottom: 1px solid;}
+        .image{display: inline-block; width: 64px; height: 64px;}
+        .image img{width: 100%; height: 100%; object-fit: cover;}
+    </style>
+</head>
+
+<body>
+    <h1>image-preloader</h1>
+
+    <input id="file-1" type="file" multiple>
+
+    <div class="border"></div>
+
+    <div id="result-1"></div>
+    
+    <div class="border"></div>
+
+    <button id="button-1">Render</button>
+
+    <div class="border"></div>
+    
+    <div id="result-2"></div>
+
+
+    <script src="dist/image-preloader.js"></script>
+    <script>
+        var loaded = [];
+        document.getElementById("file-1").addEventListener("change", function(e) {
+            var files = e.target.files;
+            var i;
+            var len = files.length;
+
+            for (var i = 0; i < len; i++) {
+                (function(file) {
+                    imagePreloader.file(file, function(err, res) {
+                        if (err) {
+                            return false;
+                        }
+                        loaded.push(res);
+                        document.getElementById("result-1").innerHTML = loaded.length + " images loaded.";
+                    })
+                })(files[i]);
+            }
+        });
+
+        document.getElementById("button-1").addEventListener("click", function(e) {
+            var src = loaded.pop();
+            if (!src) {
+                return false;
+            }
+
+            var html = "";
+            html += "<div class='image'>";
+            html += "<img src='"+src+"'>";
+            html += "</div>";
+
+            document.getElementById("result-2").innerHTML += html;
+            document.getElementById("result-1").innerHTML = loaded.length + " images loaded.";
+        })
+    </script>
+</body>
+
+</html>
